@@ -9,27 +9,27 @@ static func create(owner: Node) -> TaskScope:
 	owner.add_child(scope)
 	return scope
 
-func launch_task_named(key: String, callable: Callable, args: Array = []) -> AsyncTask:
-	var task: AsyncTask = AsyncTask.new()
+func launch_task_named(key: String, callable: Callable, args: Array = [], default_value: Variant = null) -> AsyncTask:
+	var task: AsyncTask = AsyncTask.new(default_value)
 	if not active_tasks.has(key):
 		active_tasks[key] = []
 	active_tasks[key].append(task)
 
-	task.start(callable, args)
-
+	task.start(self, callable, args)
 	task._on_finish.connect(
 		func():
 			if active_tasks.has(key):
 				active_tasks[key].erase(task)
 				if active_tasks[key].is_empty():
 					active_tasks.erase(key)
+		
 	)
 	return task
 
 
-func launch_task(callable: Callable, args: Array = []) -> AsyncTask:
+func launch_task(callable: Callable, args: Array = [], default_value: Variant = null) -> AsyncTask:
 	var key := callable.get_method()
-	return launch_task_named(key, callable, args)
+	return launch_task_named(key, callable, args, default_value)
 
 
 func cancel_all_tasks_with_key(key: String):
@@ -44,6 +44,7 @@ func cancel_all_tasks():
 		for task in tasks:
 			task.cancel()
 	active_tasks.clear()
+	print(active_tasks)
 
 
 func cancel_latest_task(key: String):
@@ -68,8 +69,14 @@ func get_all_tasks(key: String) -> Array[AsyncTask]:
 
 
 func free_scope():
+	cancel_all_tasks()
 	queue_free()
 
+
+	
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		print(" Scope deleted ")
 	
 func _exit_tree():
 	cancel_all_tasks()
