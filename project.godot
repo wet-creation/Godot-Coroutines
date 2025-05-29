@@ -15,9 +15,16 @@ run/main_scene="uid://dpvmt5ei0skwp"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1980
+window/size/viewport_height=1080
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/RiderLaunch/plugin.cfg", "res://addons/gut/plugin.cfg")
 
 [rendering]
 
