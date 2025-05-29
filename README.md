@@ -1,4 +1,4 @@
-# 🌀 Godot Async Task Framework
+# 🌀 Godot-Coroutines
 
 An asynchronous coroutine management system for Godot 4 using GDScript. It enables structured execution, cancellation, and synchronization of async functions, keeping task references and results in order.
 
