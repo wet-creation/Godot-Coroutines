@@ -13,7 +13,7 @@ var _default_value: Variant = null
 var _host: Object = Object.new()
 var _on_cancel_callbacks: Array[Callable] = []
 
-func _init(default_value) -> void:
+func _init(default_value = null) -> void:
 	_default_value = default_value
 	TaskLogger.on_created(self, get_reference_count())
 
