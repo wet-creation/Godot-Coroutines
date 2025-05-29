@@ -6,9 +6,9 @@ signal tasks_ready(values: Array)
 
 ## Internal task state
 var _pending := 0
-var _results: Array = []
-var _cancelled := false
-var _tasks: Array[AsyncTask] = []
+var _results: Array          =  []
+var _cancelled               := false
+var _tasks: Array[AsyncTask] =  []
 
 func _init() -> void:
 	_results = []

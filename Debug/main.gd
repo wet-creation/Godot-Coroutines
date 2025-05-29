@@ -2,18 +2,19 @@ extends Node2D
 
 @onready var scope := TaskScope.create(self)
 @onready var waiter := MultiWaiter.create(self)
-
+var void_res = null
 var valueFromTask: SharedValue = SharedValue.new()
 func _ready() -> void:
 	print("_ready scope launch")
-	var task1   := scope.launch_task(long_task, ["task1", 4], "canceled")
+	var task1   := scope.launch_task(void_task, ["task1", 4], "canceled")
 	var task2   := scope.launch_task(long_task, ["task2", 3])
 	waiter.add_task(task1)
 	waiter.add_task(task2)
-	#task1.wait_async(
-	#func(result): 
-		#print("Result from async task1:", result)
-	#)
+	task1.wait_async(
+	func(res): 
+		print("Result from async task1:", void_res)
+		print("Result from async task1:", res)
+	)
 
 	#waiter.tasks_ready.connect(
 		#func(array: Array):
@@ -24,13 +25,8 @@ func _ready() -> void:
 			#print("_ready finihed ", tas2Res)
 			#get_tree().change_scene_to_file("res://Debug/new_scene.tscn")
 	#)
-	task1.cancel()
-	var array =  await waiter.wait_all()
-	var tas1Res = array[0]
-	var tas2Res = array[1]
-	print("_ready finihed ", tas1Res)
-	print("_ready finihed ", tas2Res)
-	get_tree().change_scene_to_file("res://Debug/new_scene.tscn")
+	#task1.cancel()
+	#var array =  await waiter.wait_all()
 	
 	#
 	#task2.wait_async(
@@ -65,6 +61,17 @@ func long_task(message: String, delay: float) -> String:
 			#return "cancel"
 
 	return message + "_done"
+	
+func void_task(message: String, delay: float)-> void:
+	for i in range(delay, 0, -1):
+		print(message, " Wait:", i)
+		await get_tree().create_timer(1).timeout
+		#if i == 2 && !scope.active_tasks.is_empty():
+			#scope.cancel_latest_task(long_task.get_method())
+			#return "cancel"
+	void_res = message + "_done"
+	
+	
 
 
 func suspend_func(callable: Callable, args: Array = []) -> Variant:

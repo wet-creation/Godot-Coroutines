@@ -26,7 +26,7 @@ func launch_task_named(key: String, callable: Callable, args: Array = [], defaul
 	)
 	return task
 
-
+##default_value is used when coroutine is cancelled 
 func launch_task(callable: Callable, args: Array = [], default_value: Variant = null) -> AsyncTask:
 	var key := callable.get_method()
 	return launch_task_named(key, callable, args, default_value)
