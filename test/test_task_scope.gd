@@ -2,8 +2,8 @@
 extends "res://addons/gut/test.gd"
 class_name TaskScopeTest
 
-var task_scope := preload("res://Task/TaskScope.gd")
-var async_task := preload("res://Task/AsynkTask.gd")
+var task_scope := preload("res://Task/task_scope.gd")
+var async_task := preload("res://Task/async_task.gd")
 
 
 
@@ -95,9 +95,9 @@ func test_wait_async_invokes_callback():
 	assert_eq(result.value, "async_done")
 	
 func test_wait_returns_default_when_host_invalid():
-	var task := scope.launch_task(simple_task, ["ghost", 1])
+	var task := scope.launch_task(simple_task, ["ghost", 1],"default_val")
 	scope.queue_free()  # инвалидируем host (scope)
-	var result = await task.wait("default_val")
+	var result = await task.wait()
 	assert_eq(result, "default_val")
 
 func test_cancel_latest_task_works():
@@ -140,7 +140,7 @@ func test_on_cancel_callback_not_called_if_not_cancelled():
 	assert_eq(res,"no_cancel_done")
 
 func test_on_cancel_and_wait_async_together():
-	var task := scope.launch_task(simple_task, ["combo", 1])
+	var task := scope.launch_task(simple_task, ["combo", 1], "was_cancelled")
 	var cancel_called := SharedValue.new(false)
 	var async_result = SharedValue.new()
 	
@@ -148,7 +148,7 @@ func test_on_cancel_and_wait_async_together():
 	task.wait_async(func(res): 
 		print(res)
 		async_result.value = res
-		, "was_cancelled")
+	)
 	
 	task.cancel()
 	await get_tree().create_timer(2).timeout
